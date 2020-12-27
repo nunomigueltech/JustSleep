@@ -3,7 +3,7 @@
   "package": "me.modmuss50.justsleep.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinEntityPlayer"
+    "MixinServerPlayerEntity"
   ],
   "client": [
     "MixinGuiChatSleeping"
