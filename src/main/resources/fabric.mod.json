@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "justsleep",
   "name": "Just Sleep",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "entrypoints": {
     "main": ["me.modmuss50.justsleep.JustSleep"],
     "client": ["me.modmuss50.justsleep.JustSleepClient"]
