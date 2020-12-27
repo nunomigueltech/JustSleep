@@ -40,13 +40,6 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity {
 		isSleeping = false;
 	}
 
-	@Inject(method = "setSpawnPoint", at = @At("RETURN"))
-	public void updateSpawnPoint(RegistryKey<World> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean fromBlock, CallbackInfo info) {
-		if (!world.isClient) {
-			JustSleep.updateSpawnPointMap((ServerPlayerEntity) (Object) this);
-		}
-	}
-
 	@Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
 	public void trySleep(BlockPos pos, CallbackInfoReturnable<Either<SleepFailureReason, Unit>> cir) {
 		if (!world.isClient) {
