@@ -28,24 +28,28 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity {
 	}
 
 	@Inject(method = "setSpawnPoint", at = @At("HEAD"), cancellable = true)
-	public void setSpawnPoint(RegistryKey<World> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean fromBlock, CallbackInfo info) {
+	public void cancelSetSpawnPoint(RegistryKey<World> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean fromBlock, CallbackInfo info) {
 		// Skip setting spawn if it was from bed, but allow it if they were
 		// sneaking and it is day (otherwise no way to set spawn during day)
-		if (JustSleep.hasValidSpawnPoint((ServerPlayerEntity) (Object) this)) {
-			boolean isSneaking = this.isSneaking();
-			if (isSleeping && !(this.world.isDay() && isSneaking)) {
+		if (isSleeping && JustSleep.hasValidSpawnPoint((ServerPlayerEntity) (Object) this)) {
+			boolean canSetSpawnPoint = this.world.isDay() && this.isSneaking();
+			if (!canSetSpawnPoint) {
 				info.cancel();
 			}
 		}
-		isSleeping = false;
 	}
 
-	@Inject(method = "trySleep", at = @At("HEAD"), cancellable = true)
-	public void trySleep(BlockPos pos, CallbackInfoReturnable<Either<SleepFailureReason, Unit>> cir) {
+	@Inject(method = "trySleep", at = @At("HEAD"))
+	public void startSleeping(BlockPos pos, CallbackInfoReturnable<Either<SleepFailureReason, Unit>> cir) {
 		if (!world.isClient) {
 			JustSleep.updateSpawnPointMap((ServerPlayerEntity) (Object) this);
 		}
 		this.isSleeping = true;
+	}
+
+	@Inject(method = "trySleep", at = @At("RETURN"))
+	public void endSleeping(BlockPos pos, CallbackInfoReturnable<Either<SleepFailureReason, Unit>> cir) {
+		this.isSleeping = false;
 	}
 
 	@Inject(method = "onDisconnect", at = @At("HEAD"))
