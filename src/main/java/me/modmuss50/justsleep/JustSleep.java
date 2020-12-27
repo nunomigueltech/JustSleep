@@ -48,7 +48,6 @@ public class JustSleep implements ModInitializer {
 		BlockPos spawnPoint = serverPlayer.getSpawnPointPosition();
 		RegistryKey<World> spawnPointDimension = serverPlayer.getSpawnPointDimension();
 		if (spawnPoint == null || spawnPointDimension == null) {
-			LOGGER.error("Failed to locate the spawn point for player [" + player.getUuidAsString() + "]");
 			return null;
 		}
 
