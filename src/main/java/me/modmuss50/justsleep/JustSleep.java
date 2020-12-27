@@ -3,10 +3,6 @@ package me.modmuss50.justsleep;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.BedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.RespawnAnchorBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
@@ -18,15 +14,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Optional;
 
 public class JustSleep implements ModInitializer {
-
-	private static Logger LOGGER = LogManager.getLogger();
 
 	protected static final Identifier SYNC_SPAWN_POINT = new Identifier("justsleep", "sync_bed_status");
 	protected static final Identifier SET_SPAWN = new Identifier("justsleep", "set_spawn");
