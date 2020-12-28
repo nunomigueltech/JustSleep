@@ -9,9 +9,9 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,8 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity extends PlayerEntity {
 
-	private static final Logger LOGGER = LogManager.getLogger();
-	private boolean isSleeping = false;
+	@Shadow
+	private static Logger LOGGER;
+
+	private boolean justsleep_isSleeping = false;
 
 	public MixinServerPlayerEntity(World world, BlockPos pos, float yaw, GameProfile profile) {
 		super(world, pos, yaw, profile);
@@ -31,7 +33,7 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity {
 	public void cancelSetSpawnPoint(RegistryKey<World> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean fromBlock, CallbackInfo info) {
 		// Skip setting spawn if it was from bed, but allow it if they were
 		// sneaking and it is day (otherwise no way to set spawn during day)
-		if (isSleeping && JustSleep.hasValidSpawnPoint((ServerPlayerEntity) (Object) this)) {
+		if (justsleep_isSleeping && JustSleep.hasValidSpawnPoint((ServerPlayerEntity) (Object) this)) {
 			boolean canSetSpawnPoint = this.world.isDay() && this.isSneaking();
 			if (!canSetSpawnPoint) {
 				info.cancel();
@@ -44,12 +46,12 @@ public abstract class MixinServerPlayerEntity extends PlayerEntity {
 		if (!world.isClient) {
 			JustSleep.updateSpawnPointMap((ServerPlayerEntity) (Object) this);
 		}
-		this.isSleeping = true;
+		this.justsleep_isSleeping = true;
 	}
 
 	@Inject(method = "trySleep", at = @At("RETURN"))
 	public void endSleeping(BlockPos pos, CallbackInfoReturnable<Either<SleepFailureReason, Unit>> cir) {
-		this.isSleeping = false;
+		this.justsleep_isSleeping = false;
 	}
 
 	@Inject(method = "onDisconnect", at = @At("HEAD"))

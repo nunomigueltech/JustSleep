@@ -62,10 +62,6 @@ public class JustSleep implements ModInitializer {
 		validSpawnPointMap.put(uuid, spawnPoint);
 	}
 
-	public static boolean isSpawnPointMapEmpty() {
-		return validSpawnPointMap.isEmpty();
-	}
-
 	public static void removeUserFromSpawnPointMap(String uuid) {
 		validSpawnPointMap.remove(uuid);
 	}
